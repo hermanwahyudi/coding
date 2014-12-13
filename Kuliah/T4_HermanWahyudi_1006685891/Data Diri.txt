@@ -1,0 +1,6 @@
+/** Nama	: Herman Wahyudi
+ *  NPM		: 1006685891
+ *  Mata Kuliah : Dasar-dasar Pemrograman (6 SKS)
+ *  Fakultas    : Ilmu Komputer, Universitas Indonesia
+ *  Dosen	: Drs. Lim Yohanes Stefanus M.Math., Ph.D
+ */

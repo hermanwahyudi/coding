@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+
+/**
+ *
+ * @author Herman Wahyudi
+ * NPM: 1006685891
+ * Matakuliah: Perancangan dan Pemrograman Web
+ * Fakultas: Fakultas Ilmu Komputer, Universitas Indonesia
+ */
+
+-->
+<html>
+<head>
+	<!-- Judul Web -->
+	<title>Game Pukul Tikus</title>
+
+	<!-- Mengatur tampilan Web agar lebih powerfull dengan CSS -->
+	<style type = "text/css">
+
+		/* Mngatur tampilan warna judul header */
+		h1#header {
+			color : red;
+		}
+
+		/* Mengatur tampilan Isi dari web dari sisi margin dan lainnya */
+		div.container {
+			border: 1px gray solid;
+			line-height:150%;
+			margin-top: 40px;
+			margin-right: 150px;
+			margin-left: 150px;
+			background-color: transparent;
+			height: 600;
+		}
+
+		/* Mengatur div dengan class left agar margin dari kiri dapat diatur */
+		div.left {
+			float: left;
+			margin-left: 20px;
+		}
+
+		/* Mengatur div dengan class right agar margin dari kiri dapat diatur */
+		div.right {
+			float: center;
+			margin-left: 342px;
+		}
+
+		/* Mengatur latar dari Web agar lebih user friendly */
+		#setting {
+			background: url('images/view02.jpg');
+		}
+	</style>
+
+	<!-- Mengatur segala macam aturan permainan dengan javascript -->
+	<script type = "text/javascript">
+
+		/* Untuk menetukan posisi tikus saat ini */
+		var currentPos = 0, tempPos = 0;
+		/* Mengambil nilai waktu dari setInterval */
+		var timeOut = 0;
+		/* Variabel yang menetukan bahwa game akan habis atau tidak sesuai waktu */
+		var counter = 0;
+		/* Variabel yang menetukan waktu dalam menit */
+		var minutes = 2;
+		/* Variabel yang menetukan waktu dalam detik */
+		var seconds = 60;
+		/* Variabel yang menentukan total score dan saat bisa memukul atau gagal memukul */
+		var sucessHit = 0, failHit = 0, totalScore = 0;
+		/* Variabel untuk menegecek apakah Game sedang dimainkan atau tidak */
+		var isPlaying = true;
+		/* Variabel temporary mouseover */
+		var tempMouseOver = 0;
+		/* Sebuah index bila salah pukul akan mengganti gambar lain */
+		var tempWrongHit = 0;
+
+		/**
+			Sebuah fungsi untuk memulai permainan saat tombol di klik
+		 */
+		function play() {
+			if(counter < 180) {
+				if(isPlaying) {
+					var tempName = document.getElementById("Username").value;
+					if(tempName != null && tempName != "") {
+						//Set Background
+						setBackground();
+
+						tempPos = Math.floor(1 + Math.random() * 25);
+						currentPos = tempPos;
+						document.getElementById("s" + currentPos).src = "images/jerry.jpg";
+
+						//Menampilkan nilai awal score pada HTML
+						document.getElementById("skor01").value = sucessHit;
+						document.getElementById("skor02").value = failHit;
+						document.getElementById("skor03").value = totalScore;
+
+						//Mengulang terua-menerus eksekusi dari fungsi random()
+						timeOut = setInterval("random()", 1000);
+
+						isPlaying = false;
+					} else if(tempName == null || tempName == ""){
+						window.alert("Username must be filled!");
+					}
+				} else {
+					window.alert("Game is being played!");
+				}
+			} else {
+				window.alert("Game has been stopped, Please reload again!\n");
+
+			}
+		}
+
+		/**
+			Sebuah fungsi untuk merandom tikus saat muncul dan menghilang
+		 */
+		function random() {
+			currentPos = Math.floor(1 + Math.random() * 25);
+			document.getElementById("s" + tempPos).src = "images/putih.gif";
+			document.getElementById("s" + currentPos).src = "images/jerry.jpg";
+			tempPos = currentPos;
+
+			if(counter < 180) {
+				counter++;
+				setTime();
+			} else {
+				clearInterval(timeOut);
+
+				//Simpan nama User dalam Cookie
+				setCookie("-", document.getElementById("Username").value + "/" + totalScore, 7);
+
+				document.getElementById("s" + tempPos).src = "images/putih.gif";
+				isPlaying = true;
+				window.alert("Time is over!");
+			}
+			document.getElementById("s" + tempWrongHit).src = "images/putih.gif";
+		}
+
+		/**
+			Sebuah fungsi untuk menampilkan waktu permainan selama 3 menit
+		 */
+		function setTime() {
+			if(seconds == 0) {
+				seconds = 60;
+				minutes--;
+			}
+			seconds--;
+			if(seconds < 10) {
+				var s = "0" + seconds;
+				document.getElementById("time").innerHTML = "Time 0" + minutes + ":" + s;
+			} else {
+				document.getElementById("time").innerHTML = "Time 0" + minutes + ":" + seconds;
+			}
+		}
+
+		/**
+			Sebuah fungsi untuk mengatur background menjadi putih
+		 */
+		function setBackground() {
+			var i = 0;
+			//Mengisi background dengan gambar putih.gif
+			while(i < 25) {
+				document.getElementById("s" + (i+1)).src = "images/putih.gif";
+				i++
+			}
+		}
+
+		/**
+			Sebuah fungsi untuk mendapatkan skor saat user memukul tikus yang muncul dan menghilang
+		 */
+		function hit(idx) {
+			if(isPlaying) {
+				return;
+			} else {
+				//Kondisi disaat klik tikus sama dengan variabel yang dirandom atau tidak
+				if(currentPos == idx) {
+					totalScore++; sucessHit++;
+					document.getElementById("skor01").value = sucessHit;
+					document.getElementById("skor03").value = totalScore;
+					document.getElementById("s" + idx).src = "images/pecah.jpg";
+				} else if(currentPos != idx) {
+					totalScore--; failHit++;
+					document.getElementById("skor02").value = failHit;
+					document.getElementById("skor03").value = totalScore;
+					document.getElementById("s" + idx).src = "images/silang.png";
+					tempWrongHit = idx;
+				}
+			}
+		}
+
+		/**
+			Sebuah fungsi untuk mengganti dan mengatur tema yang dipilih User/Player
+		 */
+		function editTheme() {
+			var choose = document.getElementById("tema");
+			var i = choose.options[choose.selectedIndex].text;
+
+			//Memilih Theme dengan 3 Tema
+			if(i == "Theme I") {
+				document.getElementById("setting").style.background = "url('images/bumi.jpg')";
+				document.getElementById("time").style.color = "white";
+				document.getElementById("header").style.color = "#66FF33";
+				document.getElementById("idSkor").style.color = "#C00000";
+			} else if(i == "Theme II"){
+				document.getElementById("setting").style.background = "url('images/gmb.jpg')";
+				document.getElementById("time").style.color = "white";
+				document.getElementById("header").style.color = "#CCCC33";
+				document.getElementById("idSkor").style.color = "#33FFCC";
+			} else {
+				document.getElementById("setting").style.background = "url('images/view02.jpg')";
+				document.getElementById("time").style.color = "#66FF66";
+				document.getElementById("header").style.color = "red";
+				document.getElementById("idSkor").style.color = "#C00000";
+			}
+		}
+
+		/**
+			Menyimpan tiap-tipa User didalam Cookie
+		 */
+		function setCookie(tempName, tempValue, day) {
+			var date = new Date();
+			date.setDate(date.getDate() + day);
+			var tempValue = escape(tempValue) + ((day == null) ? "" : "; expires=" + date.toUTCString());
+			document.cookie += tempName + "=" + tempValue;
+		}
+
+		/**
+			Mengembalika nama-nama User yang tersimpan di dalam Cookie
+		 */
+		function getCookie(tempName) {
+			var x, y;
+			var cookAr = document.cookie.split(";");
+			for (var i = 0;i < cookAr.length; i++) {
+				x = cookAr[i].substr(0, cookAr[i].indexOf("="));
+				y = cookAr[i].substr(cookAr[i].indexOf("=") + 1);
+				x = x.replace(/^\s+|\s+$/g, "");
+				if (x == tempName) {
+					return unescape(y);
+				}
+			}
+		}
+
+		/**
+			Menghapus User yang telah tersimpan di Cookie
+		 */
+		function eraseCookie(name) {
+			setCookie(name, "", -1);
+			window.alert("Cookies is erased!");
+		}
+
+		/**
+			Sebuah fungsi untuk menampilkan Top Scores dari user yang bermain
+		 */
+		function topScore() {
+			var cook = getCookie("-");
+			if(!isPlaying) {
+				window.alert("Game is being played!");
+			} else {
+				if(cook != "" && cook != null) {
+					var dataCookie = cook.split("-=");
+					//Data ditampung di Array
+					var data = dataCookie;
+					var temp = new Array();
+
+					//Ambil score dari masing-masing User
+					for(i = 0; i < data.length; i++) {
+						var ar = data[i].split("/");
+						temp[i] = ar[1];
+					}
+
+					//Sorting Score
+					for(i = 0; i < temp.length; i++) {
+						for(j = i+1; j < temp.length; j++) {
+							if(temp[i] < temp[j]) {
+								var k = temp[i];
+								temp[i] = temp[j];
+								temp[j] = k;
+							}
+						}
+					}
+
+					var s = "";
+					var found = false;
+					var j = 0, count = 0;;
+
+					//Mengambil dan mencocokan User dengan Scorenya masing-masing
+					for(i = 0; i < temp.length; i++) {
+						while(j < data.length && !found) {
+							var ar = data[j].split("/");
+							if(ar[1] == temp[i] && count < 5) {
+								s += (i+1) + ") " + ar[0] + " and Total Score " + ar[1] + "\n";
+								found = true;
+								count++;
+							}
+							j++;
+						}
+						found = false;
+						j = 0;
+					}
+
+					window.alert("Congratulations!!\n\nTop Scores: \n\n" + s);
+				} else if(cook == "" || cook == null) {
+					window.alert("There are currently no User Saved!");
+				}
+			}
+		}
+		/**
+			Fungsi mouseOut akan berubah menjadi gambar semula saat mousekeluar area
+		 */
+		function mouseOut() {
+			if(!isPlaying) {
+				document.getElementById("s" + tempMouseOver).src = "images/putih.gif";
+			}
+		}
+
+		/**
+			Fungsi mouseOver akan berubah menjadi gambar lain saat mouse ada diatas area gambar
+		 */
+		function mouseOver(i) {
+			if(i != currentPos && !isPlaying) {
+				document.getElementById("s" + i).src = "images/bugbox.jpg";
+				tempMouseOver = i;
+			}
+		}
+	</script>
+</head>
+<!-- Body dari web dengan latar/background tang telah diatur dengan CSS -->
+<body id = "setting">
+
+	<!-- Menagtur tampilan Web dengan class container yang telah diatur di CSS -->
+	<div class = "container">
+
+		<!-- Judul Web -->
+		<center><h1 id = "header">Game Hit Mouse</h1></center> <hr />
+
+		<!-- Mengganti Tehemes sesuai User -->
+		<font color = "blue" size = "5" face = "arial" style = "margin-left: 20px; color: #66FF66">Change Themes: </font>
+		<select id = "tema" onchange = "editTheme()">
+			<option>Default</option>
+			<option>Theme I</option>
+			<option>Theme II</option>
+		</select> <br /> <br />
+
+		<!-- Menampilkan Score dari  bermacam-macam User -->
+		<div class = "left">
+			<font color = "#C00000" size = "5" face = "curly" id = "idSkor">Score: </font><br />
+			<table>
+				<tr>
+					<td style = "color: white;">Sucess</td><td><input type = "text" id = "skor01" value = "" /></td>
+				</tr>
+				<tr>
+					<td style = "color: white;">Failed</td><td><input type = "text" id = "skor02" value = "" /></td>
+				</tr>
+				<tr>
+					<td style = "color: white;">Total Score</td><td><input type = "text" id = "skor03" value = "" /></td>
+				</tr>
+				<tr>
+					<td><input type = "button" onclick = "topScore()" value = "Top Scores" /></td>
+				</tr>
+				<tr>
+					<td><a href = "javascript:eraseCookie('-')" style = "color: #CCFF66" />Clear Cookies?</a></td>
+				</tr>
+			</table>
+		</div>
+		<div class = "right">
+
+			<!-- User dapat menisi nama melalui form Username -->
+			<table style = "margin-left: 330px; color: yellow">
+				<tr>
+					<td><font size = "5" face = "curly">Username: </font></td>
+					<td><input type = "text" value = "" id = "Username" /></td>
+				</tr>
+			</table>
+
+			<!-- Menampilkan waktu permainan -->
+			<font color = "blue" size = "5" id = "time" style = "margin-left: 100px; color: #66FF66;">Time 00:00</font><br /> <br />
+
+			<!-- Kotak dengan ukuran 5x5 yang berisi tikus yang muncul dan hilang -->
+			<table border = "1">
+				<tr>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s1" onmouseover = "mouseOver(1)" onmouseout = "mouseOut()" onclick = "hit(1)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s2" onmouseover = "mouseOver(2)" onmouseout = "mouseOut()" onclick = "hit(2)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s3" onmouseover = "mouseOver(3)" onmouseout = "mouseOut()" onclick = "hit(3)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s4" onmouseover = "mouseOver(4)" onmouseout = "mouseOut()" onclick = "hit(4)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s5" onmouseover = "mouseOver(5)" onmouseout = "mouseOut()" onclick = "hit(5)" /></td>
+				</tr>
+				<tr>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s6" onmouseover = "mouseOver(6)" onmouseout = "mouseOut()" onclick = "hit(6)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s7" onmouseover = "mouseOver(7)" onmouseout = "mouseOut()" onclick = "hit(7)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s8" onmouseover = "mouseOver(8)" onmouseout = "mouseOut()" onclick = "hit(8)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s9" onmouseover = "mouseOver(9)" onmouseout = "mouseOut()" onclick = "hit(9)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s10" onmouseover = "mouseOver(10)" onmouseout = "mouseOut()" onclick = "hit(10)" /></td>
+				</tr>
+				<tr>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s11" onmouseover = "mouseOver(11)" onmouseout = "mouseOut()" onclick = "hit(11)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s12" onmouseover = "mouseOver(12)" onmouseout = "mouseOut()" onclick = "hit(12)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s13" onmouseover = "mouseOver(13)" onmouseout = "mouseOut()" onclick = "hit(13)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s14" onmouseover = "mouseOver(14)" onmouseout = "mouseOut()" onclick = "hit(14)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s15" onmouseover = "mouseOver(15)" onmouseout = "mouseOut()" onclick = "hit(15)" /></td>
+				</tr>
+				<tr>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s16" onmouseover = "mouseOver(16)" onmouseout = "mouseOut()" onclick = "hit(16)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s17" onmouseover = "mouseOver(17)" onmouseout = "mouseOut()" onclick = "hit(17)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s18" onmouseover = "mouseOver(18)" onmouseout = "mouseOut()" onclick = "hit(18)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s19" onmouseover = "mouseOver(19)" onmouseout = "mouseOut()" onclick = "hit(19)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s20" onmouseover = "mouseOver(20)" onmouseout = "mouseOut()" onclick = "hit(20)" /></td>
+				</tr>
+				<tr>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s21" onmouseover = "mouseOver(21)" onmouseout = "mouseOut()" onclick = "hit(21)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s22" onmouseover = "mouseOver(22)" onmouseout = "mouseOut()" onclick = "hit(22)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s23" onmouseover = "mouseOver(23)" onmouseout = "mouseOut()" onclick = "hit(23)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s24" onmouseover = "mouseOver(24)" onmouseout = "mouseOut()" onclick = "hit(24)" /></td>
+					<td width = "55" height = "55"><img width = "50" height = "50" id = "s25" onmouseover = "mouseOver(25)" onmouseout = "mouseOut()" onclick = "hit(25)" /></td>
+				</tr>
+			</table>
+
+			<!-- Div dari tomobol Play dan Reload -->
+			<div style = "margin-left: 80px;">
+				<input type = "image" src = "images/start.png" value = "Play" onclick = "play()" width = "140" height = "100" />
+				<!-- <input type = "button" value = "Reload" onclick = "reload()" /> -->
+			</div>
+		</div>
+		<hr />
+
+		<!-- Footer -->
+		<div>
+			<center style = "color: white;">Copyright &copy; 2011-2012 by Herman Wahyudi</center>
+		</div>
+	</div>
+</body>
+</html>

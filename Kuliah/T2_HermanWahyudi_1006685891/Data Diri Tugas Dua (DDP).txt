@@ -1,0 +1,4 @@
+/* Nama         : Herman Wahyudi
+/* NPM          : 1006685891
+/* Fakultas     : Ilmu Komputer, Universitas Indonesia
+/* Matakuliah   : Dasar-dasar Pemrograman
