@@ -27,8 +27,7 @@ with open("file.txt") as file:
 
 def reverse(str):
 	for idx in range(len(str)-1, -1, -1):
-		print(str[idx])
-		#yield str[idx]
-		
+		yield str[idx]
 
-reverse("Her")
+for i in reverse("Her"):
+	print(i)
