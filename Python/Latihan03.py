@@ -17,7 +17,7 @@ class Latihan03:
 			r = int(x/2)
 			return self.binary(r) + s
 		else:
-			return ""
+			return "" 
 
 	def __str__(self):
 		return "Ini kelas Latihan03"
