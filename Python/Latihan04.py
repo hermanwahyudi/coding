@@ -10,7 +10,7 @@ k = lambda x="8", u="0": x + u
 print(k("","9"))
 
 def sebuah_fungsi():
-	str1 = "Her"
+	str1 = "Herm"
 	f = lambda x: str1 + " " + x
 	return f
 
