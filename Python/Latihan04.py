@@ -5,7 +5,7 @@ for i in range(2, 10, 2):
 str = "herman"[3:]
 print(str)
 
-s = "sdfs"+ "wqqw"
+s = "sdfs"+ "wquqw"
 
 k = lambda x="8", u="0": x + u
 print(k("","9"))
