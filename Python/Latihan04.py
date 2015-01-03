@@ -6,7 +6,6 @@ str = "herman"[3:]
 print(str)
 
 s = "sdfs"+ "herman"
-
 k = lambda x="8", u="0": x + u
 print(k("","9"))
 
