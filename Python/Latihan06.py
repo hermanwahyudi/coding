@@ -31,7 +31,7 @@ class Latihan06:
 			return "PALINDROME"
 		return "NOT PALINDROME"
 
-	def pangkat(self, n, m):
+	def pow(self, n, m):
 		result = 1
 		for i in range(m):
 			result *= n
@@ -42,4 +42,4 @@ if(__name__ == "__main__"):
 	o = Latihan06()
 	o.solve_1()
 	print(o.is_palindrome("kasurusak"))
-	print(o.pangkat(2,3))
+	print(o.pow(2,3))
