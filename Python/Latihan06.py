@@ -39,6 +39,9 @@ class Latihan06:
 			result *= n
 		return result
 
+	def __str__(self):
+		return "Class of Latihan06"
+
 
 if(__name__ == "__main__"):
 	o = Latihan06()
