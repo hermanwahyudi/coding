@@ -39,6 +39,9 @@ class Latihan06:
 			result *= n
 		return result
 
+	def r(self, n):
+		return int(n/10)
+
 	def __str__(self):
 		return "Class of Latihan06"
 
@@ -48,3 +51,4 @@ if(__name__ == "__main__"):
 	o.solve_1()
 	print(o.is_palindrome("kasurusak"))
 	print(o.pow(2,3))
+	print(o.r(9))
